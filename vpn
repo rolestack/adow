@@ -1,0 +1,76 @@
+#!/bin/bash
+
+HEALTH_CHECK_URL="https://service.example/health"
+OPNSENSE_WIREGUARD_API_URL="https://opnsense.example.com/api/wireguard"
+
+eval $(gpg --quiet --batch --decrypt .vpn/creds.gpg 2>/dev/null)
+
+MM_URL="https://mattermost.example.com/hooks/your_webhook_url"
+MM_CHANNEL="alert-channel"
+
+send_mattermost_alert() {
+    local message="$1"
+    local color="$2"
+    local emoji="$3"
+
+    read -r -d '' payload <<EOF
+{
+  "channel": "$MM_CHANNEL",
+  "username": "SERVER_ACCESS_MONITOR",
+  "icon_emoji": "$emoji",
+  "attachments": [
+    {
+      "fallback": "$message",
+      "color": "$color",
+      "pretext": "$message",
+      "fields": [
+        { "title": "SERVER", "value": "Router", "short": true }
+      ]
+    }
+  ]
+}
+EOF
+
+    curl -X POST -H 'Content-Type: application/json' -d "$payload" "$MM_URL"
+}
+
+enable_wireguard() {
+    echo "Enabling WireGuard..."
+
+    curl -k -u "$API_KEY:$API_SECRET" -X POST "$OPNSENSE_WIREGUARD_API_URL/general/set" \
+        -H "Content-Type: application/json" \
+        --data '{"general": {"enabled": "1"}}'
+
+    curl -k -u "$API_KEY:$API_SECRET" -X POST "$OPNSENSE_WIREGUARD_API_URL/service/reconfigure" \
+        -H "Content-Type: application/json" \
+        --data '{}'
+
+    send_mattermost_alert "WireGuard was activated" "#F35A00" ":warning:"
+}
+
+disable_wireguard() {
+    echo "Disabling WireGuard..."
+
+    curl -k -u "$API_KEY:$API_SECRET" -X POST "$OPNSENSE_WIREGUARD_API_URL/general/set" \
+        -H "Content-Type: application/json" \
+        --data '{"general": {"enabled": "0"}}'
+
+    curl -k -u "$API_KEY:$API_SECRET" -X POST "$OPNSENSE_WIREGUARD_API_URL/service/reconfigure" \
+        -H "Content-Type: application/json" \
+        --data '{}'
+
+    send_mattermost_alert "WireGuard was disabled" "#36A64F" ":white_check_mark:"
+}
+
+case "$1" in
+    on)
+        enable_wireguard
+        ;;
+    off)
+        disable_wireguard
+        ;;
+    *)
+	echo "Usage: $0 [on|off]"
+	exit 1
+	;;
+esac

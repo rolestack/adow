@@ -1,0 +1,19 @@
+services:
+  adow:
+    build: .
+    image: adow:latest
+    container_name: Auto-Disable-OPNsense-Wireguard
+    env_file:
+      - .env
+    secrets:
+      - api-key
+      - api-secret
+    volumes:
+      - ./data/logs:/var/log/adow
+    restart: always
+
+secrets:
+  api-key:
+    file: ./secrets/key
+  api-secret:
+    file: ./secrets/secret
