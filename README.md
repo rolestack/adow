@@ -46,10 +46,24 @@ docker compose up -d
 ```
 
 ## Manual Enable/Disable
-The `vpn` file in the repository is a Bash script.  
-This script uses an encrypted API key.
-```
+The `vpn` file in the repository is a **Bash script** used to manually enable or disable the WireGuard VPN on OPNsense.  
+This is useful when you want to control the VPN without relying on automatic triggers.
+
+This script uses encrypted API credentials.  
+Inside the `vpn` script, there's a line that decrypts and loads the credentials into the environment:
+
+```bash
 eval $(gpg --quiet --batch --decrypt .vpn/creds.gpg 2>/dev/null)
+```
+> 📌 **Note:**  
+> This command loads `API_KEY` and `API_SECRET` into your current shell session by decrypting `.vpn/creds.gpg`.  
+> Make sure you run it **from the root of the repository** before executing the `vpn` script.
+
+Then you can run:
+
+```bash
+./vpn on    # Enable WireGuard
+./vpn off   # Disable WireGuard
 ```
 
 ### How to Create Encrypted API Key
