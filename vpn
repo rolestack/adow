@@ -16,16 +16,13 @@ send_mattermost_alert() {
     read -r -d '' payload <<EOF
 {
   "channel": "$MM_CHANNEL",
-  "username": "SERVER_ACCESS_MONITOR",
+  "username": "adow",
   "icon_emoji": "$emoji",
   "attachments": [
     {
       "fallback": "$message",
       "color": "$color",
-      "pretext": "$message",
-      "fields": [
-        { "title": "SERVER", "value": "Router", "short": true }
-      ]
+      "pretext": "$message"
     }
   ]
 }
