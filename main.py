@@ -60,13 +60,7 @@ def send_mattermost_alert(message, color, emoji):
         "channel": MM_CHANNEL,
         "username": "adow",
         "icon_emoji": emoji,
-        "attachments": [
-            {
-                "fallback": message,
-                "color": color,
-                "pretext": message
-            }
-        ]
+        "message": message
     }
     response = requests.post(MM_URL, json=payload)
     return response.status_code
