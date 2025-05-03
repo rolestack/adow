@@ -2,9 +2,17 @@
 This script automatically disables WireGuard on OPNsense when a specific website responds with an HTTP 200 (healthy) status.  
 The goal is to minimize external port exposure and avoid using SSH or VPN (WireGuard) for remote access.
 
-In setups where internal resources are accessed through specific applications (e.g., code-server from Coder), a VPN is unnecessary.
+In setups where internal resources are accessed through specific applications (e.g, code-server from Coder), a VPN is unnecessary.
 
 \* This project is designed for self-hosters, not for enterprise environments.
+
+## Architecture
+### 1. When the existing server access method is Direct SSH or SSH over VPN
+![IMG-1](images/img-1.png)
+### 2. Updated Architecture
+![IMG-2](images/img-2.png)
+### 3. In Case of Proxy or Coder Failure
+![IMG-3](images/img-3.png)
 
 ## Information
 - Container runs with internal UID and GID: `1000:1000`
