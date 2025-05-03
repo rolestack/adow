@@ -2,9 +2,6 @@
 
 HEALTH_CHECK_URL="https://service.example/health"
 OPNSENSE_WIREGUARD_API_URL="https://opnsense.example.com/api/wireguard"
-
-eval $(gpg --quiet --batch --decrypt .vpn/creds.gpg 2>/dev/null)
-
 MM_URL="https://mattermost.example.com/hooks/your_webhook_url"
 MM_CHANNEL="alert-channel"
 
@@ -55,13 +52,15 @@ disable_wireguard() {
 
 case "$1" in
     on)
+        eval $(gpg --quiet --batch --decrypt .vpn/creds.gpg 2>/dev/null)
         enable_wireguard
         ;;
     off)
+        eval $(gpg --quiet --batch --decrypt .vpn/creds.gpg 2>/dev/null)
         disable_wireguard
         ;;
     *)
-	echo "Usage: $0 [on|off]"
+	echo "Usage: $0 [on/off]"
 	exit 1
 	;;
 esac
