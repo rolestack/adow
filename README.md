@@ -67,13 +67,6 @@ eval $(gpg --quiet --batch --decrypt .vpn/creds.gpg 2>/dev/null)
 > This command loads `API_KEY` and `API_SECRET` into your current shell session by decrypting `.vpn/creds.gpg`.  
 > Make sure you run it **from the root of the repository** before executing the `vpn` script.
 
-Then you can run:
-
-```bash
-./vpn on    # Enable WireGuard
-./vpn off   # Disable WireGuard
-```
-
 ### How to Create Encrypted API Key
 
 1. Create the `.vpn/creds.txt` file
@@ -90,4 +83,11 @@ gpg --symmetric --cipher-algo AES256 -o .vpn/creds.gpg .vpn/creds.txt
 3. Delete the original plain text file
 ```bash
 rm .vpn/creds.txt
+```
+
+### CLI command
+
+```bash
+./vpn on    # Enable WireGuard
+./vpn off   # Disable WireGuard
 ```
